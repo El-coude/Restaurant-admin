@@ -1,0 +1,15 @@
+image: node:18.12.1
+pipelines:
+    branches:
+      master:
+      - step:
+          name: Build & publish
+          caches:
+            - node
+          script:
+            - npm install
+            - npm install -g typescript
+            - npm run tsbuild
+            - npm pack
+            - npm set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+            - npm publish
