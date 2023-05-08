@@ -12,7 +12,7 @@ const useAuthStore = create<AuthStoreType>()(
                     auth: {
                         token: res.data.admin.access_token,
                         email: args[0],
-                        role: "superAdmin", //place holder
+                        role: "superAdmin", //place holde
                     },
                 });
             },
