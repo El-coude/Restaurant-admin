@@ -17,6 +17,7 @@ type InputProps = {
     onChange?: () => void;
     labelColor?: string;
     className?: string;
+    autocomplete?: string;
 };
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(

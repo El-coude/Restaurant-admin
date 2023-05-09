@@ -32,7 +32,7 @@ export const Button = ({
 }: ButtonProps) => {
     const Button = styled.button`
         background: ${ocbButton ? "#499925" : backgroundColor};
-        color: ${ocbButton ? "white" : backgroundColor};
+        color: ${ocbButton ? "white" : color};
         font-size: ${size == "extraLarge"
             ? "1.5"
             : size == "large"

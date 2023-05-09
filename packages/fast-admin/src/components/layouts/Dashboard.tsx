@@ -17,6 +17,7 @@ const Dashboard: React.FC<PropsWithChildren> = ({ children }) => {
         <div className="flex">
             <SideBar
                 fontSize="16px"
+                backgroundColor="white"
                 logo={<p className="text-center">F</p>}
                 toggle={(open) => {
                     setOpened(open);
@@ -52,7 +53,7 @@ const Dashboard: React.FC<PropsWithChildren> = ({ children }) => {
                     onClick={() => navigate("/login")}
                 />
             </SideBar>
-            <div className="p-12 w-full">{children}</div>
+            <div className="p-8 w-full bg-slate-100">{children}</div>
         </div>
     );
 };
