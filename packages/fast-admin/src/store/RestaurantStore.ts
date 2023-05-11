@@ -17,6 +17,7 @@ const useRestaurantStore = create<RestaurantStoreType>()((set, get) => ({
                         "Bearer " + useAuthStore.getState().auth?.token,
                 },
             });
+            console.log(res.data);
             set({
                 restaurants: res.data.map((co: Restaurant) => {
                     return co;
@@ -28,6 +29,7 @@ const useRestaurantStore = create<RestaurantStoreType>()((set, get) => ({
             set(() => ({ loading: false, error: true }));
         }
     },
+    setRestaurants: (restaurants) => set(() => ({ restaurants })),
     addRestaurant: async (restaurant, onSuccess, onFail) => {
         try {
             await axios.post(API_URL + "/restaurant/create", restaurant, {
@@ -69,6 +71,8 @@ export type RestaurantStoreType = {
     loading: boolean;
     error: boolean;
     getRestaurants: () => void;
+    setRestaurants: (restaurants: Restaurant[]) => void;
+
     addRestaurant: (
         restaurant: Restaurant,
         onSuccess: () => void,

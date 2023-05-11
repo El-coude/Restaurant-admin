@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent, InputHTMLAttributes } from "react";
 import styled from "styled-components";
 
 type InputProps = {
@@ -14,11 +14,11 @@ type InputProps = {
     borderColor?: string;
     borderWeigth?: number;
     onClick?: () => void;
-    onChange?: () => void;
+    onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
     labelColor?: string;
     className?: string;
     autocomplete?: string;
-};
+} & InputHTMLAttributes<HTMLInputElement>;
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     (

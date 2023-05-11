@@ -11,10 +11,18 @@ import Swal from "sweetalert2";
 import AddManagerModal from "../../components/dashboard/AddManagerModal";
 import { ImSpinner2 } from "react-icons/im";
 import Container from "../../components/general/Container";
+import { MdDeleteForever } from "react-icons/md";
+import { HiOutlineUserAdd } from "react-icons/hi";
 
 const Restaurants = () => {
-    const { restaurants, getRestaurants, removeRestaurant, loading, error } =
-        useRestaurantStore((state) => state);
+    const {
+        restaurants,
+        getRestaurants,
+        removeRestaurant,
+        loading,
+        error,
+        setRestaurants,
+    } = useRestaurantStore((state) => state);
     const [rows, setRows] = useState<TableRowDataType[]>([]);
     const [managerModal, setManagerModal] = useState<number | null>(null); // null invisible else restaurant id
 
@@ -33,12 +41,11 @@ const Restaurants = () => {
                     manager: rest.manager ? (
                         rest.manager.name
                     ) : (
-                        <Button
-                            size="small"
-                            ocbButton
-                            label="Add manager"
-                            onClick={() => setManagerModal(rest.id!)}
-                        />
+                        <button
+                            className="btn btn-circle btn-ghost text-secondary"
+                            onClick={() => setManagerModal(rest.id!)}>
+                            <HiOutlineUserAdd size={20} />
+                        </button>
                     ),
                 }),
             });
@@ -50,14 +57,26 @@ const Restaurants = () => {
     const handleAddRestaurant = () => {
         setAddModalVisible(true);
     };
+
+    const handeRemove = async (i: number) => {
+        const res = await Swal.fire({
+            text: "Are you sure you want to remove",
+            showDenyButton: true,
+            denyButtonText: "Cancel",
+            confirmButtonText: "Confirm",
+        });
+        if (res.isConfirmed) removeRestaurant(restaurants[i].id!);
+    };
+
     return (
         <Container className="h-screen">
             <div className=" ml-auto mb-4 flex justify-between items-center">
-                <h1 className="text-2xl ">Restaurants</h1>
-                <Button
-                    label="Create restaurant"
-                    onClick={handleAddRestaurant}
-                />
+                <h1 className="text-3xl font-bold">Restaurants</h1>
+                <button
+                    className="btn btn-secondary text-white"
+                    onClick={handleAddRestaurant}>
+                    Create restaurant
+                </button>
                 {addModalVisible && (
                     <AddRestaurantModal
                         close={() => setAddModalVisible(false)}
@@ -72,24 +91,18 @@ const Restaurants = () => {
                         {rows.map((row, i) => (
                             <>
                                 <TableRow row={row} key={i} />
-                                <Button
-                                    size="small"
-                                    label="remove"
-                                    backgroundColor="red"
-                                    color="#fff"
-                                    onClick={async () => {
-                                        const res = await Swal.fire({
-                                            text: "Are you sure you want to remove",
-                                            showDenyButton: true,
-                                            denyButtonText: "Cancel",
-                                            confirmButtonText: "Confirm",
-                                        });
-                                        if (res.isConfirmed)
-                                            removeRestaurant(
-                                                restaurants[i].id!
-                                            );
-                                    }}
-                                />
+                                <div className="flex gap-1">
+                                    {/*  <button
+                                        className="btn btn-circle btn-ghost text-info"
+                                        onClick={() => handeRemove(i)}>
+                                        <AiFillEye size={20} />
+                                    </button> */}
+                                    <button
+                                        className="btn btn-circle btn-ghost text-error"
+                                        onClick={() => handeRemove(i)}>
+                                        <MdDeleteForever size={20} />
+                                    </button>
+                                </div>
                             </>
                         ))}
                     </Table>
@@ -100,6 +113,7 @@ const Restaurants = () => {
                 <AddManagerModal
                     restaurantId={managerModal}
                     close={() => setManagerModal(null)}
+                    onSuccess={() => getRestaurants()}
                 />
             )}
         </Container>

@@ -15,50 +15,36 @@ type ButtonProps = {
     className?: string;
 };
 
-export const Button = ({
-    primary = false,
-    size = "medium",
-    color,
-    rounded,
-    backgroundColor,
-    borderColor,
-    borderWeigth = 1,
-    label,
-    hoverBgColor,
-    ocbButton,
-    className,
-    onClick,
-    ...props
-}: ButtonProps) => {
-    const Button = styled.button`
-        background: ${ocbButton ? "#499925" : backgroundColor};
-        color: ${ocbButton ? "white" : color};
-        font-size: ${size == "extraLarge"
+const StyledButton = styled.button<ButtonProps>`
+    background: ${(props) =>
+        props.ocbButton ? "#499925" : props.backgroundColor};
+    color: ${(props) => (props.ocbButton ? "white" : props.color)};
+    font-size: ${(props) =>
+        props.size == "extraLarge"
             ? "1.5"
-            : size == "large"
+            : props.size == "large"
             ? "1.25"
-            : size == "medium"
+            : props.size == "medium"
             ? "1.15"
             : "0.8"}rem;
-        padding: ${size == "extraLarge"
+    padding: ${(props) =>
+        props.size == "extraLarge"
             ? "12px 32px"
-            : size == "large"
+            : props.size == "large"
             ? "10px 24px"
-            : size == "medium"
-            ? "8px 16px"
-            : "4px 12px"};
-        border: ${borderWeigth}px solid ${borderColor};
-        border-radius: ${rounded ? "999px" : "8px"};
-        cursor: pointer;
-        transition: 0.1s;
-        &:hover {
-            background: ${hoverBgColor || backgroundColor};
-        }
-    `;
+            : props.size == "small"
+            ? "4px 12px"
+            : "8px 16px"};
+    border: ${(props) => props.borderWeigth || "1"}px solid
+        ${(props) => props.borderColor};
+    border-radius: ${(props) => (props.rounded ? "999px" : "8px")};
+    cursor: pointer;
+    transition: 0.1s;
+    &:hover {
+        background: ${(props) => props.hoverBgColor || props.backgroundColor};
+    }
+`;
 
-    return (
-        <Button className={className} onClick={onClick} {...props}>
-            {label}
-        </Button>
-    );
+export const Button = ({ primary = false, ...props }: ButtonProps) => {
+    return <StyledButton {...props}>{props.label}</StyledButton>;
 };

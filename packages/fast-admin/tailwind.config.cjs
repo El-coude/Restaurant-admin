@@ -24,5 +24,29 @@ module.exports = {
             solid: "0 0 0 2px #404043",
         },
     },
-    plugins: [],
+    daisyui: {
+        themes: [
+            {
+                mytheme: {
+                    primary: "#fb923c",
+
+                    secondary: "#14532d",
+
+                    accent: "#a9f9b8",
+
+                    neutral: "#212B3B",
+
+                    "base-100": "#E1E5EA",
+
+                    info: "#78C2D9",
+
+                    success: "#2DE674",
+
+                    warning: "#fde047",
+                    error: "#dc2626",
+                },
+            },
+        ],
+    },
+    plugins: [require("daisyui")],
 };
