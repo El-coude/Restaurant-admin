@@ -4,7 +4,7 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                main: "'Roboto Slab', serif",
+                main: "'Poppins', serif",
             },
             colors: {
                 primary: {

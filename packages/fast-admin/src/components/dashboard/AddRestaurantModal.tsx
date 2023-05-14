@@ -19,8 +19,6 @@ const AddRestaurantModal = ({ close }: { close: () => void }) => {
         lat: 34.906,
     });
 
-    console.log(map);
-
     return (
         <Modal close={close}>
             <div className="flex flex-col gap-4">
@@ -56,9 +54,8 @@ const AddRestaurantModal = ({ close }: { close: () => void }) => {
                     />
                 </AddressAutofill> */}
                 <p className="text-rose-500" ref={errLabel}></p>
-                <Button
-                    label="Confirm"
-                    ocbButton
+                <button
+                    className="btn btn-secondary text-white"
                     onClick={() =>
                         addRestaurant(
                             {
@@ -73,8 +70,9 @@ const AddRestaurantModal = ({ close }: { close: () => void }) => {
                                 (errLabel.current.innerText =
                                     "Could not add Restaurants")
                         )
-                    }
-                />
+                    }>
+                    Confirm
+                </button>
             </div>
         </Modal>
     );

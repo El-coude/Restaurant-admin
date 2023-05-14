@@ -13,6 +13,7 @@ const Dashboard: React.FC<PropsWithChildren> = ({ children }) => {
 
     const [opened, setOpened] = useState(true);
     const navigate = useNavigate();
+    const color = "#14532d";
     return (
         <div className="flex">
             <SideBar
@@ -26,12 +27,14 @@ const Dashboard: React.FC<PropsWithChildren> = ({ children }) => {
                     text="Overview"
                     icon={<MdDashboard />}
                     open={opened}
+                    color={color}
                     onClick={() => navigate("/dashboard")}
                 />
                 <SideBarElement
                     text="Orders"
                     icon={<AiOutlineShoppingCart />}
                     open={opened}
+                    color={color}
                     onClick={() => navigate("/dashboard")}
                 />
                 <SideBarElement
@@ -39,17 +42,27 @@ const Dashboard: React.FC<PropsWithChildren> = ({ children }) => {
                     icon={<IoRestaurantOutline />}
                     open={opened}
                     onClick={() => navigate("/dashboard/restaurants")}
+                    color={color}
+                    active={location.pathname.includes("restaurants")}
                 />
-                <SideBarElement
+                {/*  <SideBarElement
                     text="Managers"
                     icon={<RiUser2Line />}
                     open={opened}
                     onClick={() => navigate("/dashboard")}
+                /> */}
+                <SideBarElement
+                    text="Delivery "
+                    icon={<RiUser2Line />}
+                    open={opened}
+                    color={color}
+                    onClick={() => navigate("/dashboard/delivery")}
                 />
                 <SideBarElement
                     text="Clients"
                     icon={<RiUser3Line />}
                     open={opened}
+                    color={color}
                     onClick={() => navigate("/login")}
                 />
             </SideBar>

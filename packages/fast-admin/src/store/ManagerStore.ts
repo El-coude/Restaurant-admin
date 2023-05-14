@@ -38,13 +38,6 @@ const useManagerStore = create<ManagerStoreType>()((set) => ({
             onFail(error as AxiosError);
         }
     },
-    /* removeManager: async (email) => {
-        set({
-            Managers: useManagerStore
-                .getState()
-                .Managers.filter((co) => co.email !== email),
-        });
-    }, */
 }));
 
 export type ManagerStoreType = {

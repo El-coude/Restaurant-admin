@@ -15,14 +15,8 @@ import { MdDeleteForever } from "react-icons/md";
 import { HiOutlineUserAdd } from "react-icons/hi";
 
 const Restaurants = () => {
-    const {
-        restaurants,
-        getRestaurants,
-        removeRestaurant,
-        loading,
-        error,
-        setRestaurants,
-    } = useRestaurantStore((state) => state);
+    const { restaurants, getRestaurants, removeRestaurant, loading, error } =
+        useRestaurantStore((state) => state);
     const [rows, setRows] = useState<TableRowDataType[]>([]);
     const [managerModal, setManagerModal] = useState<number | null>(null); // null invisible else restaurant id
 

@@ -3,7 +3,7 @@ import router from "./pages/router/Routes";
 
 function App() {
     return (
-        <div className="App min-h-screen font-main text-lg text-black">
+        <div className="App min-h-screen font-main text-lg text-slate-900">
             <RouterProvider router={router} />
         </div>
     );

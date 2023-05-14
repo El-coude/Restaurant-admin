@@ -27,7 +27,7 @@ const SideBarContainer = styled.div<SideBarProps>`
 
 export const SideBar: React.FC<SideBarProps & PropsWithChildren> = ({
     closeIcon = <BsFillArrowLeftCircleFill color="#499925" width={16} />,
-    width = "220px",
+    width = "260px",
     closedWidth = "64px",
     ...props
 }) => {
@@ -106,10 +106,16 @@ interface SideBarElementProps {
     text: string;
     link?: string;
     open?: boolean;
+    active?: boolean;
+    color: string;
     onClick?: () => void;
 }
 
-const SideBarElementContainer = styled.div<{ open: boolean }>`
+const SideBarElementContainer = styled.div<{
+    open: boolean;
+    color: string;
+    active?: boolean;
+}>`
     display: flex;
     align-items: center;
     gap: 8px;
@@ -118,12 +124,18 @@ const SideBarElementContainer = styled.div<{ open: boolean }>`
     padding: 12px;
     border-radius: 8px;
     &:hover {
-        background-color: #d7d6d6;
+        background-color: ${({ color }) => color};
+        color: white;
     }
     ${({ open }) =>
         css`
             width: ${open ? "80%" : ""};
             justify-content: ${open ? "start" : "center"};
+        `}
+    ${({ active, color }) =>
+        css`
+            background-color: ${active ? color : ""};
+            color: ${active ? "white" : ""};
         `}
 `;
 
@@ -143,7 +155,9 @@ export const SideBarElement: React.FC<SideBarElementProps> = (props) => {
     return (
         <SideBarElementContainer
             onClick={props.onClick}
-            open={props.open || false}>
+            active={!!props.active}
+            open={!!props.open}
+            color={props.color}>
             <IconContainer>{props.icon}</IconContainer>
             {props.open && <TextContainer>{props.text}</TextContainer>}
         </SideBarElementContainer>
