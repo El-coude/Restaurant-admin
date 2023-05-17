@@ -8,48 +8,71 @@ import { ImSpinner2 } from "react-icons/im";
 
 const AddDeliverModal = ({
     close,
-    onSuccess,
+    action = "create",
+    prevValues,
 }: {
     close: () => void;
-    onSuccess?: () => void;
+    action?: "update" | "create";
+    prevValues?: Deliver;
 }) => {
     const {
         register,
         handleSubmit,
         formState: { errors },
+        setValue,
     } = useForm();
 
-    const add = (info: any) => {
-        addDeliver(
-            {
-                name: info.name,
-                email: info.email,
-                phone: info.phone,
-                restaurantId: 1,
-            },
-            () => {
-                close();
-            },
-            (err) => (errLabel.current.innerText = "Could not add Deliver")
-        );
+    const { addDeliver, updateDeliver } = useDeliversStore((state) => state);
+
+    const submit = (info: any) => {
+        if (action == "create")
+            addDeliver(
+                {
+                    name: info.name,
+                    email: info.email,
+                    phone: "+213" + info.phone,
+                    restaurantId: +info.restaurant,
+                },
+                () => {
+                    close();
+                },
+                (err) => (errLabel.current.innerText = err)
+            );
+        else
+            updateDeliver(
+                {
+                    id: prevValues?.id,
+                    name: info.name,
+                    email: info.email,
+                    phone: "+213" + info.phone,
+                    restaurantId: +info.restaurant,
+                },
+                () => {
+                    close();
+                },
+                (err) => (errLabel.current.innerText = err)
+            );
     };
 
     const errLabel = useRef<HTMLParagraphElement>(null!);
-    const { addDeliver } = useDeliversStore((state) => state);
     const { restaurants, getRestaurants, loading } = useRestaurantStore(
         (state) => state
     );
     useEffect(() => {
         if (!restaurants.length) {
             getRestaurants();
+            setValue("restaurant", `${prevValues?.restaurantId}` || "-1");
         }
     }, []);
     return (
         <Modal close={close}>
-            <form className="flex flex-col gap-4" onSubmit={handleSubmit(add)}>
+            <form
+                className="flex flex-col gap-4"
+                onSubmit={handleSubmit(submit)}>
                 <Input
                     label="Deliver's name"
                     type="text"
+                    defaultValue={prevValues?.name}
                     {...register("name", { required: true })}
                 />
 
@@ -60,6 +83,7 @@ const AddDeliverModal = ({
                 <Input
                     label="Deliver's email"
                     type="text"
+                    defaultValue={prevValues?.email}
                     {...register("email", {
                         pattern:
                             /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
@@ -73,14 +97,20 @@ const AddDeliverModal = ({
                     <p className="text-error text-sm">Unvalid email format</p>
                 )}
 
-                <Input
-                    label="Deliver's phone"
-                    type="text"
-                    {...register("phone", {
-                        pattern: /^\d{10}$/,
-                        required: true,
-                    })}
-                />
+                <label>Deliver's phone</label>
+                <div className="flex items-end gap-1">
+                    <div className="bg-slate-50 rounded-md border border-black p-2">
+                        +213
+                    </div>
+                    <Input
+                        type="text"
+                        defaultValue={prevValues?.phone.slice(4)}
+                        {...register("phone", {
+                            pattern: /^\d{9}$/,
+                            required: true,
+                        })}
+                    />
+                </div>
                 {errors.phone?.type == "required" && (
                     <p className="text-error text-sm">Phone can't be empty</p>
                 )}
@@ -88,7 +118,7 @@ const AddDeliverModal = ({
                     <p className="text-error text-sm">Unvalid phone format</p>
                 )}
 
-                <label htmlFor="">
+                <label>
                     Choose which restaurant the delivery is related to
                 </label>
                 {loading ? (
@@ -101,13 +131,13 @@ const AddDeliverModal = ({
                 ) : (
                     <select
                         className="bg-white p-2 border border-black rounded-lg py-3"
-                        defaultValue={-1}
+                        defaultValue={prevValues?.restaurantId || -1}
                         {...register("restaurant", {
                             min: 0,
                         })}>
                         {restaurants.map((rest) => (
-                            <option value={rest.id}>
-                                {rest.name} ( {rest.address}, {rest.city} )
+                            <option key={rest.id} value={rest.id}>
+                                {rest.name} ( {rest.address} )
                             </option>
                         ))}
                     </select>
@@ -121,7 +151,8 @@ const AddDeliverModal = ({
                 <p className="text-rose-500" ref={errLabel}></p>
                 <button
                     type="submit"
-                    className="btn btn-secondary btn-block text-white">
+                    className="btn btn-secondary btn-block text-white flex gap-2">
+                    {loading && <ImSpinner2 className="spinner" size={14} />}
                     Confirm
                 </button>
             </form>

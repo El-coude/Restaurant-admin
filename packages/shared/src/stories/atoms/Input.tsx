@@ -1,5 +1,5 @@
 import React, { ChangeEvent, InputHTMLAttributes } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 type InputProps = {
     primary?: boolean;
@@ -8,7 +8,7 @@ type InputProps = {
     hoverBgColor?: string;
     color?: string;
     size?: "small" | "medium" | "large" | "extraLarge";
-    label: string;
+    label?: string;
     rounded?: boolean;
     width?: number;
     borderColor?: string;
@@ -20,29 +20,17 @@ type InputProps = {
     autocomplete?: string;
 } & InputHTMLAttributes<HTMLInputElement>;
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-    (
-        {
-            primary = false,
-            size = "medium",
-            color,
-            type = "text",
-            rounded,
-            backgroundColor,
-            borderColor,
-            borderWeigth = 1,
-            label,
-            width,
-            labelColor,
-            hoverBgColor,
-            className,
-            onChange,
-            onClick,
-            ...props
-        },
-        ref
-    ) => {
-        const Input = styled.input`
+const StyledInput = styled.input<any>`
+    ${({
+        backgroundColor,
+        width,
+        size,
+        borderWeigth,
+        borderColor,
+        rounded,
+        hoverBgColor,
+    }) =>
+        css`
             background: ${backgroundColor};
             color: ${backgroundColor};
             width: ${!width ? "auto" : width + "px"};
@@ -60,42 +48,46 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 : size == "medium"
                 ? "8px 16px"
                 : "4px 12px"};
-            border: ${borderWeigth}px solid ${borderColor};
+            border: ${borderWeigth || 1}px solid ${borderColor || "black"};
             border-radius: ${rounded ? "999px" : "8px"};
             &:hover {
                 background: ${hoverBgColor || backgroundColor};
             }
-        `;
+        `}
+`;
 
-        const ContainerDiv = styled.div`
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        `;
+const ContainerDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+`;
 
-        const Label = styled.label`
-        color: ${labelColor}
-        font-size: ${
-            size == "extraLarge"
-                ? "1.5"
-                : size == "large"
-                ? "1.25"
-                : size == "medium"
-                ? "1.15"
-                : "0.8"
-        }rem;
-        display: block
-    `;
+const Label = styled.label<any>`
+    color: ${({ labelColor }) => labelColor}
+    font-size: ${({ size }) =>
+        size == "extraLarge"
+            ? "1.5"
+            : size == "large"
+            ? "1.25"
+            : size == "medium"
+            ? "1.15"
+            : "0.8"}rem;
+    display: block
+`;
+
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+    (
+        { primary = false, size = "medium", type = "text", label, ...props },
+        ref
+    ) => {
         return (
             <ContainerDiv>
                 {label && <Label>{label}</Label>}
-                <Input
+                <StyledInput
                     ref={ref}
-                    className={className}
-                    onClick={onClick}
                     type={type}
-                    onChange={onChange}
-                    {...props}></Input>
+                    size={size}
+                    {...props}></StyledInput>
             </ContainerDiv>
         );
     }

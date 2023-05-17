@@ -1,10 +1,4 @@
 import { useEffect, useState } from "react";
-import {
-    Button,
-    Table,
-    TableRow,
-    TableRowDataType,
-} from "@fast-monorepo/shared/index";
 import AddRestaurantModal from "../../components/dashboard/AddRestaurantModal";
 import useRestaurantStore from "../../store/RestaurantStore";
 import Swal from "sweetalert2";
@@ -17,49 +11,27 @@ import { HiOutlineUserAdd } from "react-icons/hi";
 const Restaurants = () => {
     const { restaurants, getRestaurants, removeRestaurant, loading, error } =
         useRestaurantStore((state) => state);
-    const [rows, setRows] = useState<TableRowDataType[]>([]);
     const [managerModal, setManagerModal] = useState<number | null>(null); // null invisible else restaurant id
+    const [updateRes, setUpdateRes] = useState<number | null>(null);
 
     useEffect(() => {
         getRestaurants();
     }, []);
 
-    useEffect(() => {
-        let rows: TableRowDataType[] = [];
-        restaurants.forEach((rest) => {
-            rows.push({
-                data: Object.values({
-                    name: rest.name,
-                    address: rest.address,
-                    city: rest.city,
-                    manager: rest.manager ? (
-                        rest.manager.name
-                    ) : (
-                        <button
-                            className="btn btn-circle btn-ghost text-secondary"
-                            onClick={() => setManagerModal(rest.id!)}>
-                            <HiOutlineUserAdd size={20} />
-                        </button>
-                    ),
-                }),
-            });
-        });
-        setRows([...rows]);
-    }, [restaurants]);
-
     const [addModalVisible, setAddModalVisible] = useState(false);
+
     const handleAddRestaurant = () => {
         setAddModalVisible(true);
     };
 
-    const handeRemove = async (i: number) => {
+    const handeRemove = async (id: number) => {
         const res = await Swal.fire({
-            text: "Are you sure you want to remove",
+            title: "Are you sure you want to remove restaurant",
             showDenyButton: true,
             denyButtonText: "Cancel",
             confirmButtonText: "Confirm",
         });
-        if (res.isConfirmed) removeRestaurant(restaurants[i].id!);
+        if (res.isConfirmed) removeRestaurant(id);
     };
 
     return (
@@ -73,33 +45,61 @@ const Restaurants = () => {
                 </button>
                 {addModalVisible && (
                     <AddRestaurantModal
+                        action="create"
                         close={() => setAddModalVisible(false)}
                     />
                 )}
             </div>
-            {loading && <ImSpinner2 className="spinner m-auto" size={28} />}
             {error && <p className="text-center text-red-600">Network error</p>}
-            {rows.length > 0 && (
+            {loading && <ImSpinner2 className="spinner m-auto" size={28} />}
+            {restaurants.length > 0 && (
                 <div>
-                    <Table header={["Name", "Adresse", "City", "Manager", ""]}>
-                        {rows.map((row, i) => (
-                            <>
-                                <TableRow row={row} key={i} />
-                                <div className="flex gap-1">
-                                    {/*  <button
-                                        className="btn btn-circle btn-ghost text-info"
-                                        onClick={() => handeRemove(i)}>
-                                        <AiFillEye size={20} />
-                                    </button> */}
-                                    <button
-                                        className="btn btn-circle btn-ghost text-error"
-                                        onClick={() => handeRemove(i)}>
-                                        <MdDeleteForever size={20} />
-                                    </button>
-                                </div>
-                            </>
-                        ))}
-                    </Table>
+                    <table className="table w-full border-spacing-2">
+                        <thead>
+                            <tr className="bg-transparent [&>th]:bg-transparent ">
+                                <th>NAME</th>
+                                <th>ADDRESS</th>
+                                <th>MANAGER</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {restaurants.map((rest, i) => (
+                                <tr
+                                    key={i}
+                                    onClick={() => setUpdateRes(i)}
+                                    className="text-sm hover:bg-slate-200 cursor-pointer [&>td]:bg-transparent">
+                                    <td>{rest.name}</td>
+                                    <td>{rest.address}</td>
+                                    <td>
+                                        {rest.manager ? (
+                                            rest.manager.name
+                                        ) : (
+                                            <button
+                                                className="btn btn-circle btn-ghost text-secondary"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setManagerModal(rest.id!);
+                                                }}>
+                                                <HiOutlineUserAdd size={20} />
+                                            </button>
+                                        )}
+                                    </td>
+                                    <td>
+                                        <button
+                                            className="btn btn-circle btn-ghost text-error"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handeRemove(rest.id!);
+                                            }}>
+                                            <MdDeleteForever size={20} />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             )}
 
@@ -108,6 +108,13 @@ const Restaurants = () => {
                     restaurantId={managerModal}
                     close={() => setManagerModal(null)}
                     onSuccess={() => getRestaurants()}
+                />
+            )}
+            {updateRes != null && (
+                <AddRestaurantModal
+                    prevValues={restaurants[updateRes]}
+                    action="update"
+                    close={() => setUpdateRes(null)}
                 />
             )}
         </Container>

@@ -1,38 +1,35 @@
 import { useEffect, useState } from "react";
-import {
-    Button,
-    Table,
-    TableRow,
-    TableRowDataType,
-} from "@fast-monorepo/shared/index";
+
 import AddDeliverModal from "../../components/dashboard/AddDeliverModal";
 import useDeliverStore from "../../store/DeliverStore";
 import Container from "../../components/general/Container";
+import { ImSpinner2 } from "react-icons/im";
+import { MdDeleteForever } from "react-icons/md";
+import Swal from "sweetalert2";
 
 const Delivers = () => {
-    const { delivers, getDelivers } = useDeliverStore((state) => state);
-    const [rows, setRows] = useState<TableRowDataType[]>([]);
+    const { delivers, getDelivers, loading, error, removeDeliver } =
+        useDeliverStore((state) => state);
 
     useEffect(() => {
         getDelivers();
     }, []);
 
-    useEffect(() => {
-        let rows: TableRowDataType[] = [];
-        delivers.forEach((rest) => {
-            rows.push({
-                data: Object.values({
-                    ...rest,
-                }),
-            });
-        });
-        console.log(rows);
-        setRows([...rows]);
-    }, [delivers]);
-
     const [addModalVisible, setAddModalVisible] = useState(false);
+    const [updateModal, setUpdateModal] = useState<number | null>(null);
+
     const handleAddDeliver = () => {
         setAddModalVisible(true);
+    };
+
+    const handeRemove = async (i: number) => {
+        const res = await Swal.fire({
+            title: "Are you sure you want to remove restaurant",
+            showDenyButton: true,
+            denyButtonText: "Cancel",
+            confirmButtonText: "Confirm",
+        });
+        if (res.isConfirmed) removeDeliver(i);
     };
     return (
         <Container>
@@ -47,13 +44,52 @@ const Delivers = () => {
                     <AddDeliverModal close={() => setAddModalVisible(false)} />
                 )}
             </div>
-            <div>
-                <Table header={["Name", "Phone", "Restaurant"]}>
-                    {rows.map((row, i) => (
-                        <TableRow row={row} key={i} />
-                    ))}
-                </Table>
-            </div>
+            {error && <p className="text-center text-red-600">Network error</p>}
+            {loading && <ImSpinner2 className="spinner m-auto" size={28} />}
+            {delivers.length > 0 && (
+                <div>
+                    <table className="table w-full border-spacing-2">
+                        <thead>
+                            <tr className="bg-transparent [&>th]:bg-transparent ">
+                                <th>NAME</th>
+                                <th>PHONE</th>
+                                <th>RESTAURANT</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {delivers.map((del, i) => (
+                                <tr
+                                    key={i}
+                                    onClick={() => setUpdateModal(i)}
+                                    className="text-sm hover:bg-slate-200 cursor-pointer [&>td]:bg-transparent">
+                                    <td>{del.name}</td>
+                                    <td>{del.phone}</td>
+                                    <td>{del.restaurant?.name}</td>
+                                    <td>
+                                        <button
+                                            className="btn btn-circle btn-ghost text-error"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handeRemove(del.id!);
+                                            }}>
+                                            <MdDeleteForever size={20} />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+            {updateModal && (
+                <AddDeliverModal
+                    close={() => setUpdateModal(null)}
+                    action="update"
+                    prevValues={delivers[updateModal]}
+                />
+            )}
         </Container>
     );
 };

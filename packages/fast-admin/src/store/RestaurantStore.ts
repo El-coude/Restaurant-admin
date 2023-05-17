@@ -31,6 +31,7 @@ const useRestaurantStore = create<RestaurantStoreType>()((set, get) => ({
     },
     setRestaurants: (restaurants) => set(() => ({ restaurants })),
     addRestaurant: async (restaurant, onSuccess, onFail) => {
+        set({ loading: true });
         try {
             await axios.post(API_URL + "/restaurant/create", restaurant, {
                 headers: {
@@ -38,11 +39,42 @@ const useRestaurantStore = create<RestaurantStoreType>()((set, get) => ({
                         "Bearer " + useAuthStore.getState().auth?.token,
                 },
             });
-            set({
-                restaurants: [...get().restaurants, restaurant],
-            });
+            set(({ restaurants }) => ({
+                restaurants: [...restaurants, restaurant],
+                loading: false,
+            }));
             onSuccess();
         } catch (error) {
+            set({ loading: false });
+
+            onFail(error as AxiosError);
+        }
+    },
+    updateRestaurant: async (restaurant, onSuccess, onFail) => {
+        const { id, manager, ...rest } = restaurant;
+        set({ loading: true });
+        try {
+            await axios.patch(
+                API_URL + "/restaurant/" + id,
+                { ...rest, managerId: manager?.id },
+                {
+                    headers: {
+                        Authorization:
+                            "Bearer " + useAuthStore.getState().auth?.token,
+                    },
+                }
+            );
+            set(({ restaurants }) => ({
+                restaurants: restaurants.map((res) => {
+                    if (res.id === id) return restaurant;
+                    return res;
+                }),
+                loading: false,
+            }));
+
+            onSuccess();
+        } catch (error) {
+            set({ loading: false });
             onFail(error as AxiosError);
         }
     },
@@ -54,11 +86,9 @@ const useRestaurantStore = create<RestaurantStoreType>()((set, get) => ({
                         "Bearer " + useAuthStore.getState().auth?.token,
                 },
             });
-            set({
-                restaurants: useRestaurantStore
-                    .getState()
-                    .restaurants.filter((co) => co.id !== id),
-            });
+            set(({ restaurants }) => ({
+                restaurants: restaurants.filter((co) => co.id !== id),
+            }));
             /* onSuccess(); */
         } catch (error) {
             /* onFail(error as AxiosError); */
@@ -78,13 +108,19 @@ export type RestaurantStoreType = {
         onSuccess: () => void,
         onFail: (err: AxiosError) => void
     ) => void;
+    updateRestaurant: (
+        restaurant: Restaurant,
+        onSuccess: () => void,
+        onFail: (err: AxiosError) => void
+    ) => void;
     removeRestaurant: (id: number) => void;
 };
 
 export type Restaurant = {
     id?: number;
     name: string;
-    city: string;
+    longtitud: number;
+    latitud: number;
     address: string;
     manager?: Manager;
 };
