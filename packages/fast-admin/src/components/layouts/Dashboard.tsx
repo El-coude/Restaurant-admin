@@ -6,6 +6,7 @@ import { MdDashboard } from "react-icons/md";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { IoRestaurantOutline } from "react-icons/io5";
 import { RiUser2Line, RiUser3Line } from "react-icons/ri";
+import { BiDish } from "react-icons/bi";
 
 const Dashboard: React.FC<PropsWithChildren> = ({ children }) => {
     const { auth } = useAuthStore((state) => state);
@@ -15,7 +16,7 @@ const Dashboard: React.FC<PropsWithChildren> = ({ children }) => {
     const navigate = useNavigate();
     const color = "#14532d";
     return (
-        <div className="flex">
+        <div className="flex min-h-screen">
             <SideBar
                 fontSize="16px"
                 backgroundColor="white"
@@ -45,12 +46,14 @@ const Dashboard: React.FC<PropsWithChildren> = ({ children }) => {
                     color={color}
                     active={location.pathname.includes("restaurants")}
                 />
-                {/*  <SideBarElement
-                    text="Managers"
-                    icon={<RiUser2Line />}
+                <SideBarElement
+                    text="Meals"
+                    icon={<BiDish />}
                     open={opened}
-                    onClick={() => navigate("/dashboard")}
-                /> */}
+                    onClick={() => navigate("/dashboard/meals")}
+                    color={color}
+                    active={location.pathname.includes("meals")}
+                />
                 <SideBarElement
                     text="Delivery "
                     icon={<RiUser2Line />}

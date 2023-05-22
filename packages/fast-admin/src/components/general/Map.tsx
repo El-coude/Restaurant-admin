@@ -3,7 +3,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Modal from "./Modal";
 import { Button } from "@fast-monorepo/shared/index";
-import Geo, { GeocodeService } from "@mapbox/mapbox-sdk/services/geocoding";
+import Geo from "@mapbox/mapbox-sdk/services/geocoding";
 
 const PickFromMap = ({
     close,

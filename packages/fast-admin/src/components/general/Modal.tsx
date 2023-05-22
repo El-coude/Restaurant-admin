@@ -11,8 +11,8 @@ const Modal: React.FC<PropsWithChildren & PropsType> = ({
 }) => {
     return (
         <>
-            <div className="absolute inset-0 opacity-50 bg-black w-full h-full z-50"></div>
-            <div className="absolute p-8 bg-white rounded-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
+            <div className="fixed inset-0 opacity-50 bg-black w-full h-full z-50"></div>
+            <div className="fixed p-8 bg-white rounded-lg top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
                 <GrFormClose
                     onClick={close}
                     className="ml-auto cursor-pointer"

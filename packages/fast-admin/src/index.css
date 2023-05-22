@@ -18,7 +18,6 @@
 @tailwind utilities;
 
 body {
-    overflow: hidden;
     --pri-1: #9DC107;
     --pri-2: #499925;
     --pri-3: #28600c;

@@ -17,12 +17,21 @@ interface SideBarProps {
 const SideBarContainer = styled.div<SideBarProps>`
     background-color: ${(props) => props.backgroundColor || "#ededed"};
     transition: 0.2s;
-    height: ${(props) => props.height || "100vh"};
+    height: ${(props) => props.height || "100%"};
+    position: relative;
+`;
+const SideBarFixedContainer = styled.div<SideBarProps>`
+    background-color: ${(props) => props.backgroundColor || "#ededed"};
+    transition: 0.2s;
+    height: 100vh;
     padding: ${(props) => props.padding || "1rem 0.9rem"};
     font-size: ${(props) => props.fontSize || "auto"};
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: fixed;
+    top: Opx;
+    left: Opx;
 `;
 
 export const SideBar: React.FC<SideBarProps & PropsWithChildren> = ({
@@ -88,15 +97,21 @@ export const SideBar: React.FC<SideBarProps & PropsWithChildren> = ({
             style={{
                 width: open ? width : closedWidth,
             }}>
-            <LogoContainer
-                onMouseOver={showCloseButton}
-                onMouseLeave={hideCloseButton}>
-                {open && props.logo}
-                <CloseButton onClick={handleClick} clicked={!open}>
-                    {(closeButton || !open) && closeIcon}
-                </CloseButton>
-            </LogoContainer>
-            {props.children}
+            <SideBarFixedContainer
+                {...props}
+                style={{
+                    width: open ? `${parseInt(width) - 30}px` : closedWidth,
+                }}>
+                <LogoContainer
+                    onMouseOver={showCloseButton}
+                    onMouseLeave={hideCloseButton}>
+                    {open && props.logo}
+                    <CloseButton onClick={handleClick} clicked={!open}>
+                        {(closeButton || !open) && closeIcon}
+                    </CloseButton>
+                </LogoContainer>
+                {props.children}
+            </SideBarFixedContainer>
         </SideBarContainer>
     );
 };
