@@ -122,10 +122,11 @@ export type MealStoreType = {
 export type Meal = {
     id?: number;
     name: string;
-    price: string;
+    price: number;
     description: string;
     images: string[];
     categoryIds: number[];
+    restaurantId: number;
 };
 
 export default useMealStore;

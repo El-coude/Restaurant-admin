@@ -62,6 +62,11 @@ const AddRestaurantModal = ({
                             }))
                         }
                         setInfo={setMap}
+                        defaultPos={
+                            map.latitud && map.longtitud
+                                ? [map.latitud, map.longtitud]
+                                : undefined
+                        }
                     />
                 )}
                 <p className="text-rose-500" ref={errLabel}></p>

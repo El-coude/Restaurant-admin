@@ -27,7 +27,7 @@ export const login: LoginFn = (
                 },
             }); */
             } catch (error) {
-                if ((error as AxiosError).response?.status == 401) {
+                if ((error as AxiosError).response?.status == 403) {
                     passErrLabel.innerText = "Wrong email or password";
                     return;
                 }

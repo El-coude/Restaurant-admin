@@ -8,7 +8,6 @@ import Dashboard from "../../components/layouts/Dashboard";
 import Login from "../auth/Login";
 import Restaurants from "../dashboard/Restaurants";
 import Delivers from "../dashboard/Delivers";
-import Meals from "../dashboard/Meals";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -26,10 +25,7 @@ const router = createBrowserRouter(
                 path="/dashboard/restaurants"
                 element={<Dashboard children={<Restaurants />} />}
             />
-            <Route
-                path="/dashboard/meals"
-                element={<Dashboard children={<Meals />} />}
-            />
+
             <Route
                 path="/dashboard/delivery"
                 element={<Dashboard children={<Delivers />} />}

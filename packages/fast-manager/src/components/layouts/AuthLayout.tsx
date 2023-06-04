@@ -5,6 +5,7 @@ import useAuthStore from "../../store/authStore";
 const AuthLayout: React.FC<PropsWithChildren> = ({ children }) => {
     const { auth } = useAuthStore((state) => state);
 
+    console.log(auth);
     if (auth) return <Navigate to="/dashboard" />;
     return (
         <>

@@ -79,6 +79,7 @@ const Restaurants = () => {
                                             <button
                                                 className="btn btn-circle btn-ghost text-secondary"
                                                 onClick={(e) => {
+                                                    console.log(rest.id);
                                                     e.stopPropagation();
                                                     setManagerModal(rest.id!);
                                                 }}>

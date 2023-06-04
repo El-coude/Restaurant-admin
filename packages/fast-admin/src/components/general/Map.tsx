@@ -4,10 +4,12 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Modal from "./Modal";
 import { Button } from "@fast-monorepo/shared/index";
 import Geo from "@mapbox/mapbox-sdk/services/geocoding";
+import { FaMapMarkerAlt } from "react-icons/fa";
 
 const PickFromMap = ({
     close,
     setInfo,
+    defaultPos,
 }: {
     close: () => void;
     setInfo: Dispatch<
@@ -18,33 +20,30 @@ const PickFromMap = ({
             address?: string;
         }>
     >;
+    defaultPos?: [number, number];
 }) => {
     const [cords, setCords] = useState({
-        longtitud: 1.105,
-        latitud: 34.906,
+        longtitud: defaultPos ? defaultPos[1] : 1.105,
+        latitud: defaultPos ? defaultPos[0] : 34.906,
     });
     useEffect(() => {
-        /*   Map.accessToken = 'YOUR_ACCESS_TOKEN'; */
         mapbox.accessToken =
             "pk.eyJ1IjoiY2hha2VyMTciLCJhIjoiY2xoZDhrMnJ3MTk4dTNxcWZsNmF1bGw5ZiJ9.gOcmLycKZha9lTLl_HPp6Q";
         const map = new Map({
             container: "map",
             style: "mapbox://styles/mapbox/streets-v11",
-            center: [1.105, 34.906], // Set the initial center of the map
+            center: [
+                defaultPos ? defaultPos[1] : 1.105,
+                defaultPos ? defaultPos[0] : 34.906,
+            ], // Set the initial center of the map
             zoom: 6, // Set the initial zoom level
         });
-
-        const marker = new Marker({
-            draggable: true,
-        })
-            .setLngLat([1.105, 34.906])
-            .addTo(map);
-
-        marker.on("dragend", (e) => {
-            var lngLat = marker.getLngLat();
+        map.on("dragend", (e) => {
+            var lngLat = map.getCenter();
+            console.log(map.getCenter());
             setCords((prev) => ({
-                latitud: lngLat.lng,
-                longtitud: lngLat.lat,
+                longtitud: lngLat.lng,
+                latitud: lngLat.lat,
             }));
         });
     }, []);
@@ -53,9 +52,11 @@ const PickFromMap = ({
         const geo = Geo({
             accessToken:
                 "pk.eyJ1IjoiY2hha2VyMTciLCJhIjoiY2xoZDhrMnJ3MTk4dTNxcWZsNmF1bGw5ZiJ9.gOcmLycKZha9lTLl_HPp6Q",
+            /*   Map.accessToken = 'YOUR_ACCESS_TOKEN'; */
         });
         try {
             // Make a reverse geocoding request
+            console.log([longitude, latitude]);
             const response = await geo
                 .reverseGeocode({
                     query: [longitude, latitude],
@@ -85,7 +86,14 @@ const PickFromMap = ({
 
     return (
         <Modal close={close}>
-            <div id="map" className="mb-4 h-[468px] w-[468px]"></div>
+            <div id="map" className="mb-4 h-[468px] w-[468px] relative">
+                <div>
+                    <FaMapMarkerAlt
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50"
+                        size={40}
+                    />
+                </div>
+            </div>
             <Button
                 label="Confirm"
                 className="w-full"

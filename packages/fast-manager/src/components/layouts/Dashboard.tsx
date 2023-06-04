@@ -8,7 +8,7 @@ import { RiUser2Line } from "react-icons/ri";
 import { BiDish } from "react-icons/bi";
 
 const Dashboard: React.FC<PropsWithChildren> = ({ children }) => {
-    const { auth } = useAuthStore((state) => state);
+    const { auth, logout } = useAuthStore((state) => state);
     if (!auth) return <Navigate to="/login" />;
 
     const [opened, setOpened] = useState(true);
@@ -35,7 +35,7 @@ const Dashboard: React.FC<PropsWithChildren> = ({ children }) => {
                     icon={<AiOutlineShoppingCart />}
                     open={opened}
                     color={color}
-                    onClick={() => navigate("/dashboard")}
+                    onClick={() => navigate("/dashboard/orders")}
                 />
 
                 <SideBarElement
@@ -52,6 +52,16 @@ const Dashboard: React.FC<PropsWithChildren> = ({ children }) => {
                     open={opened}
                     color={color}
                     onClick={() => navigate("/dashboard/delivery")}
+                />
+                <SideBarElement
+                    text="Logout "
+                    icon={<RiUser2Line />}
+                    open={opened}
+                    color={color}
+                    onClick={() => {
+                        logout();
+                        location.assign("/");
+                    }}
                 />
             </SideBar>
             <div className="p-8 w-full bg-slate-100">{children}</div>

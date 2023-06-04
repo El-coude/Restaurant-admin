@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import useAuthStore from "../../store/authStore";
 import { Button, Input } from "@fast-monorepo/shared/index";
-import { API_URL } from "@fast-monorepo/shared";
+import { API_URL } from "@fast-monorepo/shared/index";
 
 const Login = () => {
     const email = useRef<HTMLInputElement>(null!);

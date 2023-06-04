@@ -29,41 +29,10 @@ const useDeliverStore = create<DeliverStoreType>()((set) => ({
             console.log(error);
         }
     },
-    addDeliver: async (Deliver, onSuccess, onFail) => {
-        set(() => ({ loading: true }));
 
-        try {
-            await axios.post(API_URL + "/deliverymen/create", Deliver, {
-                headers: {
-                    Authorization:
-                        "Bearer " + useAuthStore.getState().auth?.token,
-                },
-            });
-
-            set(({ delivers }) => ({
-                delivers: [
-                    ...delivers,
-                    {
-                        ...Deliver,
-                        restaurant: useRestaurantStore
-                            .getState()
-                            .restaurants.find(
-                                (res) => res.id === Deliver.restaurantId
-                            ),
-                    },
-                ],
-                loading: false,
-            }));
-            onSuccess();
-        } catch (error: any) {
-            set(() => ({ loading: false }));
-            onFail(error.response?.data?.message[0]);
-        }
-    },
     updateDeliver: async (Deliver, onSuccess, onFail) => {
-        const { id, restaurant, ...rest } = Deliver;
+        const { id, ...rest } = Deliver;
         set(() => ({ loading: true }));
-        console.log(id);
         try {
             await axios.patch(
                 API_URL + "/deliverymen/" + id,
@@ -78,12 +47,11 @@ const useDeliverStore = create<DeliverStoreType>()((set) => ({
             set(({ delivers }) => ({
                 delivers: delivers.map((del) => {
                     if (del.id === id)
-                        return { ...Deliver, restaurant: del.restaurant };
+                        return { ...del, accepted: Deliver.accepted };
                     return del;
                 }),
                 loading: false,
             }));
-            console.log(Deliver);
             onSuccess();
         } catch (error: any) {
             set({ loading: false });
@@ -113,13 +81,13 @@ export type DeliverStoreType = {
     loading: boolean;
     error: string;
     getDelivers: () => void;
-    addDeliver: (
+    /*   addDeliver: (
         Deliver: Deliver,
         onSuccess: () => void,
         onFail: (err: string) => void
-    ) => void;
+    ) => void; */
     updateDeliver: (
-        Deliver: Deliver,
+        Deliver: Partial<Deliver>,
         onSuccess: () => void,
         onFail: (err: string) => void
     ) => void;
@@ -129,10 +97,9 @@ export type DeliverStoreType = {
 export type Deliver = {
     id?: number;
     name: string;
-    email: string;
     phone: string;
-    restaurantId: number;
-    restaurant?: Restaurant;
+    accepted?: boolean;
+    requestMessage?: string;
 };
 
 export default useDeliverStore;

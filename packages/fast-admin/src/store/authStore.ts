@@ -16,6 +16,9 @@ const useAuthStore = create<AuthStoreType>()(
                     },
                 });
             },
+            logout() {
+                return set({ auth: null });
+            },
         }),
         {
             name: "auth",
@@ -27,6 +30,7 @@ const useAuthStore = create<AuthStoreType>()(
 export type AuthStoreType = {
     auth: Auth | null;
     login: (...args: Parameters<LoginFn>) => void;
+    logout: () => void;
 };
 
 export type Auth = {

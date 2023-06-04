@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { ImSpinner2 } from "react-icons/im";
 import MealsImages from "./MealsImages";
 import useCategoryStore, { Category } from "../../store/CategoriesStore";
+import useAuthStore from "../../store/authStore";
 
 const AddMealModal = ({
     close,
@@ -22,6 +23,7 @@ const AddMealModal = ({
         formState: { errors },
     } = useForm();
 
+    const { auth } = useAuthStore((state) => state);
     const { addMeal, updateMeal, loading } = useMealsStore((state) => state);
     const [images, setImages] = useState<string[]>(prevValues?.images || []);
     const [selectedCategories, setSelectedCategories] = useState<number[]>(
@@ -40,9 +42,10 @@ const AddMealModal = ({
                 {
                     name: info.name,
                     description: info.description,
-                    price: `${info.price}`,
+                    price: +info.price,
                     categoryIds: selectedCategories,
                     images: images,
+                    restaurantId: auth?.restaurant!.id!,
                 },
                 () => {
                     close();
@@ -55,9 +58,10 @@ const AddMealModal = ({
                     id: prevValues?.id,
                     name: info.name,
                     description: info.description,
-                    price: `${info.price}`,
+                    price: +info.price,
                     categoryIds: selectedCategories,
                     images: images,
+                    restaurantId: auth?.restaurant!.id!,
                 },
                 () => {
                     close();
@@ -150,7 +154,8 @@ const AddMealModal = ({
                 <p className="text-rose-500" ref={errLabel}></p>
                 <button
                     type="submit"
-                    className="btn btn-secondary btn-block text-white flex gap-2">
+                    className="btn btn-secondary btn-block text-white flex gap-2"
+                    onClick={() => console.log("first")}>
                     {loading && <ImSpinner2 className="spinner" size={14} />}
                     Confirm
                 </button>

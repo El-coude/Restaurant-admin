@@ -6,10 +6,9 @@ import { MdDashboard } from "react-icons/md";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { IoRestaurantOutline } from "react-icons/io5";
 import { RiUser2Line, RiUser3Line } from "react-icons/ri";
-import { BiDish } from "react-icons/bi";
 
 const Dashboard: React.FC<PropsWithChildren> = ({ children }) => {
-    const { auth } = useAuthStore((state) => state);
+    const { auth, logout } = useAuthStore((state) => state);
     if (!auth) return <Navigate to="/login" />;
 
     const [opened, setOpened] = useState(true);
@@ -47,14 +46,6 @@ const Dashboard: React.FC<PropsWithChildren> = ({ children }) => {
                     active={location.pathname.includes("restaurants")}
                 />
                 <SideBarElement
-                    text="Meals"
-                    icon={<BiDish />}
-                    open={opened}
-                    onClick={() => navigate("/dashboard/meals")}
-                    color={color}
-                    active={location.pathname.includes("meals")}
-                />
-                <SideBarElement
                     text="Delivery "
                     icon={<RiUser2Line />}
                     open={opened}
@@ -67,6 +58,16 @@ const Dashboard: React.FC<PropsWithChildren> = ({ children }) => {
                     open={opened}
                     color={color}
                     onClick={() => navigate("/login")}
+                />
+                <SideBarElement
+                    text="Logout "
+                    icon={<RiUser2Line />}
+                    open={opened}
+                    color={color}
+                    onClick={() => {
+                        logout();
+                        location.assign("/");
+                    }}
                 />
             </SideBar>
             <div className="p-8 w-full bg-slate-100">{children}</div>
