@@ -5,11 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cd packages/fast-admin && pnpm run dev",
+    "dev:admin": "cd packages/fast-admin && pnpm run dev",
+    "dev:manager": "cd packages/fast-manager && pnpm run dev",
+
     "build:ui": "cd packages/shared && npm run tsbuild",
     "build:fast-admin": "cd packages/fast-admin && pnpm run build",
-    "build": "pnpm run build:ui && pnpm run build:fast-admin",
-    "start": "cd packages/fast-admin && pnpm run preview"
+    "build:fast-manager": "cd packages/fast-manager && pnpm run build",
+
+    "build": "pnpm run build:ui && pnpm run build:fast-admin && pnpm run build:fast-manager",
+    "start": "cd packages/fast-admin && pnpm run preview",
+    "start:manager": "cd packages/fast-manager && pnpm run preview"
   },
   "keywords": [],
   "author": "",

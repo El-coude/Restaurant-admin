@@ -5,6 +5,7 @@ import { API_URL } from "../env";
 export const login: LoginFn = (
     email,
     password,
+    url,
     emailErrLabel,
     passErrLabel
 ) => {
@@ -13,7 +14,7 @@ export const login: LoginFn = (
         const emailValid = checkEmail(email, emailErrLabel);
         if (passValid && emailValid) {
             try {
-                const res = await axios.post(API_URL + "/auth/admins/signin", {
+                const res = await axios.post(url, {
                     email: email,
                     password: password,
                 });
@@ -41,6 +42,7 @@ export const login: LoginFn = (
 export type LoginFn = (
     email: string,
     password: string,
+    url: string,
     emailErrLabel: HTMLParagraphElement,
     passErrLabel: HTMLParagraphElement
 ) => Promise<AxiosResponse<any, any>>;
